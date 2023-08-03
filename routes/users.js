@@ -259,7 +259,7 @@ const ur = require("../userRoles/userRoles");
 //   }
 // });
 
-userRoutes.route("/isUserCollectionEmpty").get(async (req, res) => {
+userRoutes.route("/empty").get(async (req, res) => {
   try {
     const documents = await User.find().lean();
     const isEmpty = documents.length === 0;
