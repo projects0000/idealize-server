@@ -91,7 +91,7 @@ authenticationRoutes.route("/login").post(async (req, res) => {
   }
 });
 
-authenticationRoutes.route("/addFurtherDetails").post(async (req, res) => {
+authenticationRoutes.route("/additional-details").post(async (req, res) => {
   console.log("Authentication");
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
@@ -135,8 +135,10 @@ authenticationRoutes.route("/addFurtherDetails").post(async (req, res) => {
   }
 });
 
-authenticationRoutes.route("/verifyToken/:token").get(async (req, res) => {
+authenticationRoutes.route("/verify/token/:token").get(async (req, res) => {
+  console.log("called")
   const token = req.params.token;
+  console.log(token)
   jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
     if (err) {
       return res.json({
@@ -154,11 +156,5 @@ authenticationRoutes.route("/verifyToken/:token").get(async (req, res) => {
   });
 });
 
-authenticationRoutes.route("/check").get(async (req, res) => {
-  return res.json({
-    message: "TH",
-    status: false,
-  });
-});
 
 module.exports = authenticationRoutes;
