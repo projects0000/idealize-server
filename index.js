@@ -6,7 +6,11 @@ require("dotenv").config();
 
 app.use(
   cors({
-    origin: [process.env.ORIGIN],
+    origin: [
+      "http://localhost:3000",
+      "https://idealize-frontend.onrender.com",
+      "https://www.idealize.raguraj.me",
+    ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
 );
