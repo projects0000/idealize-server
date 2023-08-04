@@ -57,7 +57,7 @@ authenticationRoutes.route("/login").post(async (req, res) => {
           });
         }
       } else {
-        if (profile?.email === "ragurajsivanantham@gmail.com") {
+        if (profile?.email === "uomidealize@gmail.com") {
           res.status(200).json({
             message: "New User",
             user: {
@@ -107,7 +107,7 @@ authenticationRoutes.route("/additional-details").post(async (req, res) => {
   let message;
 
   if (usrCount.length === 0) {
-    if (emailAddress != "ragurajsivanantham@gmail.com") {
+    if (emailAddress != "uomidealize@gmail.com") {
       return res.json({
         message:
           "You are currently prohibited from logging in as a Super Admin. If you believe this is an error, please contact the company immediately.",
