@@ -10,6 +10,7 @@ app.use(
       "http://localhost:3000",
       "https://idealize-frontend.onrender.com",
       "https://www.idealize.raguraj.me",
+      "https://www.idealize.mathesh.me"
     ],
     methods: "GET,POST,PUT,DELETE,OPTIONS",
   })
