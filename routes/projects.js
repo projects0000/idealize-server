@@ -35,7 +35,8 @@ projectRoutes.put('/update', async (req, res) => {
                 softwareArchitect,
                 projectManager,
                 teamLead,
-                developers
+                developers,
+                updateStatus: true
             },
             { new: true }
         );
@@ -51,5 +52,17 @@ projectRoutes.put('/update', async (req, res) => {
     }
 });
 
+projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
+    try {
+        const resourceManagerId = req.params.resourceManagerId;
+
+        const projects = await Project.find({ "resourceManager": resourceManagerId, "updateStatus": false }, "projectName");
+
+        res.json({ status: true, data: projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
+    }
+});
 
 module.exports = projectRoutes;

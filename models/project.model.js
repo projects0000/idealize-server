@@ -10,6 +10,7 @@ const ProjectSchema = new mongoose.Schema(
         projectManager: { type: Object },
         teamLead: { type: Object },
         developers: [{ type: Object }],
+        updateStatus: { type: Boolean, default: false },
     },
     {
         collection: "projects",
