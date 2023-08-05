@@ -7,7 +7,8 @@ const ProjectSchema = new mongoose.Schema(
         expectedDate: { type: Date },
         softwareArchitect: { type: Object },
         resourceManager: { type: Object },
-        projectManagerID: { type: Object },
+        projectManager: { type: Object },
+        teamLead: { type: Object },
         developers: [{ type: Object }],
     },
     {
