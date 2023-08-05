@@ -41,6 +41,47 @@ userRoutes.route("/empty").get(async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+//get all software-architects
+userRoutes.get('/software-architects', async (req, res) => {
+  try {
+    const softwareArchitects = await User.find({ userRole: 'Software Architect' }, '_id firstName lastName');
+    res.json({ status: true, data: softwareArchitects });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Software Architects.' });
+  }
+});
+//get all Resource Management
+userRoutes.get('/resource-management', async (req, res) => {
+  try {
+    const resourseManager = await User.find({ userRole: 'Resource Management' }, '_id firstName lastName');
+    res.json({ status: true, data: resourseManager });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Resource Management.' });
+  }
+});
+//get all Project Manager
+userRoutes.get('/project-managers', async (req, res) => {
+  try {
+    const projectManager = await User.find({ userRole: 'Project Manager' }, '_id firstName lastName');
+    res.json({ status: true, data: projectManager });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Project Manager.' });
+  }
+});
+//get all Developers
+userRoutes.get('/developers', async (req, res) => {
+  try {
+    const developer = await User.find({ userRole: 'Developer' }, '_id firstName lastName');
+    res.json({ status: true, data: developer });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Developer.' });
+  }
+});
+
 
 
 // userRoutes.route("/users/showAllUsers/systemadmin/:depid").get(auth([ur.systemAdmin]), function (req, res) {
