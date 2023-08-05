@@ -41,6 +41,28 @@ userRoutes.route("/empty").get(async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+//get all software-architects
+userRoutes.get('/software-architects', async (req, res) => {
+  try {
+    const softwareArchitects = await User.find({ userRole: 'Software Architect' }, '_id firstName lastName');
+    res.json({ status: true, data: softwareArchitects });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Software Architects.' });
+  }
+});
+//get all Resource Management
+userRoutes.get('/resource-management', async (req, res) => {
+  try {
+    const resourseManager = await User.find({ userRole: 'Resource Management' }, '_id firstName lastName');
+    res.json({ status: true, data: resourseManager });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Resource Management.' });
+  }
+});
+
+
 
 
 // userRoutes.route("/users/showAllUsers/systemadmin/:depid").get(auth([ur.systemAdmin]), function (req, res) {
