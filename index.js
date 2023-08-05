@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const path = require("path");
 require("dotenv").config();
 
 app.use(
@@ -17,7 +18,7 @@ app.use(
 );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+app.use(express.static(path.join(__dirname, 'public')));
 function addVersionInfo(apiEndPoint) {
   const versionHeader = "/api/v1";
   return versionHeader + apiEndPoint;
@@ -25,6 +26,7 @@ function addVersionInfo(apiEndPoint) {
 
 app.use(addVersionInfo("/authentication"), require("./routes/authentication"));
 app.use(addVersionInfo("/users"), require("./routes/users"));
+app.use(addVersionInfo("/teams"), require("./routes/teams"));
 
 mongoose.set("strictQuery", false);
 mongoose
@@ -39,6 +41,7 @@ mongoose
 app.get("/", (req, res) => {
   return res.json({
     message: "Node Server running on  port " + process.env.PORT,
+    address: `${req.protocol}://${req.get('host')}`
   });
 });
 
