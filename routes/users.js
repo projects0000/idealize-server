@@ -61,7 +61,26 @@ userRoutes.get('/resource-management', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Resource Management.' });
   }
 });
-
+//get all Project Manager
+userRoutes.get('/project-managers', async (req, res) => {
+  try {
+    const projectManager = await User.find({ userRole: 'Project Manager' }, '_id firstName lastName');
+    res.json({ status: true, data: projectManager });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Project Manager.' });
+  }
+});
+//get all Developers
+userRoutes.get('/developers', async (req, res) => {
+  try {
+    const developer = await User.find({ userRole: 'Developer' }, '_id firstName lastName');
+    res.json({ status: true, data: developer });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching Developer.' });
+  }
+});
 
 
 
