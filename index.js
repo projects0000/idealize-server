@@ -25,7 +25,7 @@ function addVersionInfo(apiEndPoint) {
 
 app.use(addVersionInfo("/authentication"), require("./routes/authentication"));
 app.use(addVersionInfo("/users"), require("./routes/users"));
-
+app.use(addVersionInfo("/projects"), require("./routes/projects"));
 mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_LOCAL_URI, {
