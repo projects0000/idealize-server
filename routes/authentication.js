@@ -33,31 +33,18 @@ authenticationRoutes.route("/login").post(async (req, res) => {
 
       const userDocument = await User.findOne({ emailAddress: profile?.email });
       if (userDocument) {
-        if (userDocument.isProfileComplete === true) {
-          return res.status(200).json({
-            message: "Success",
-            user: {
-              picture: profile?.picture,
-              token: jwt.sign({ userData: userDocument }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXP, }),
-            },
-            availability: true,
-            isProfileComplete: true,
-            status: true,
-          });
-        } else {
-          res.status(200).json({
-            message: "New User",
-            user: {
-              firstName: profile?.given_name,
-              lastName: profile?.family_name,
-            },
-            availability: true,
-            isProfileComplete: false,
-            status: true,
-          });
-        }
+        return res.status(200).json({
+          message: "Success",
+          user: {
+            picture: profile?.picture,
+            token: jwt.sign({ userData: userDocument }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXP, }),
+          },
+          availability: true,
+          isProfileComplete: true,
+          status: true,
+        });
       } else {
-        if (profile?.email === "ragurajsivanantham@gmail.com") {
+        if (profile?.email === process.env.SUPER_ADMIN_MAIL) {
           res.status(200).json({
             message: "New User",
             user: {
@@ -80,7 +67,6 @@ authenticationRoutes.route("/login").post(async (req, res) => {
             status: true,
           });
         }
-
       }
     }
   } catch (error) {
@@ -107,7 +93,7 @@ authenticationRoutes.route("/additional-details").post(async (req, res) => {
   let message;
 
   if (usrCount.length === 0) {
-    if (emailAddress != "ragurajsivanantham@gmail.com") {
+    if (emailAddress != process.env.SUPER_ADMIN_MAIL) {
       return res.json({
         message:
           "You are currently prohibited from logging in as a Super Admin. If you believe this is an error, please contact the company immediately.",
@@ -116,8 +102,7 @@ authenticationRoutes.route("/additional-details").post(async (req, res) => {
     }
     userRole = "Super Admin";
     message = "You are promoted as Super Admin. Please login to continue";
-    const isProfileComplete = true;
-    const user = new User({ firstName, lastName, gender, dob, phoneNumber, empId, emailAddress, userRole, userImage, isProfileComplete });
+    const user = new User({ firstName, lastName, gender, dob, phoneNumber, empId, emailAddress, userRole, userImage });
     user
       .save()
       .then((item) => res.json({ message: message, status: "success" }))
@@ -136,9 +121,7 @@ authenticationRoutes.route("/additional-details").post(async (req, res) => {
 });
 
 authenticationRoutes.route("/verify/token/:token").get(async (req, res) => {
-  console.log("called")
   const token = req.params.token;
-  console.log(token)
   jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
     if (err) {
       return res.json({

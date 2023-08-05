@@ -5,6 +5,44 @@ const sendMail = require("../mail/mailer");
 const auth = require("../middleware/checkPermission");
 const ur = require("../userRoles/userRoles");
 
+userRoutes.route("/").post(async (req, res) => {
+  try {
+    if (req.body.gender === "Male") {
+      req.body.userImage = `${req.protocol}://${req.get('host')}/images/gender/male.png`
+    } else if (req.body.gender === "Female") {
+      req.body.userImage = `${req.protocol}://${req.get('host')}/images/gender/female.png`
+    } else {
+      req.body.userImage = `${req.protocol}://${req.get('host')}/images/gender/other.png`
+    }
+
+    const user = new User(req.body);
+    user.save().then((user) => {
+      return res.json({ message: "User Added Successfully", status: true });
+    }).catch((err) => {
+      if (err.code === 11000) {
+        return res.json({ message: "Duplicate User Found", status: false });
+      } else {
+        return res.json({ message: "Unknown Error", status: false });
+      }
+    })
+  } catch (error) {
+    console.error(error);
+    return res.json({ message: "Internal Server Error", status: false });
+  }
+});
+
+userRoutes.route("/empty").get(async (req, res) => {
+  try {
+    const documents = await User.find().lean();
+    const isEmpty = documents.length === 0;
+    res.status(200).json({ status: isEmpty });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 // userRoutes.route("/users/showAllUsers/systemadmin/:depid").get(auth([ur.systemAdmin]), function (req, res) {
 //   console.log("Logged in user");
 //   console.log(req.loggedInUser);
@@ -224,14 +262,14 @@ const ur = require("../userRoles/userRoles");
 //       html: `<pre>
 //         Dear User,
 //         We regret to inform you that your profile has been denied due to the following reasons:
-        
+
 //         1. Wrong Data: The information provided in your profile did not match our verification process.We request you to kindly update your profile with accurate information.
 //         2. Access to the System: It appears that you do not have the necessary permissions to access our system.Please contact our support team for further assistance.
-      
+
 //         We understand that this may cause inconvenience to you, but we strive to maintain the highest standards of security and accuracy for our users.We encourage you to reapply with correct information or contact our support team if you have any questions or concerns.
-        
+
 //         Thank you for your interest in our system.
-        
+
 //         Best regards,
 //         NETS Team
 //       </pre > `,
@@ -258,16 +296,5 @@ const ur = require("../userRoles/userRoles");
 //     });
 //   }
 // });
-
-userRoutes.route("/empty").get(async (req, res) => {
-  try {
-    const documents = await User.find().lean();
-    const isEmpty = documents.length === 0;
-    res.status(200).json({ status: isEmpty });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
 
 module.exports = userRoutes;
