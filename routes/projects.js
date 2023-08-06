@@ -56,7 +56,7 @@ projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
     try {
         const resourceManagerId = req.params.resourceManagerId;
 
-        const projects = await Project.find({ "resourceManager": resourceManagerId, "updateStatus": false }, "projectName");
+        const projects = await Project.find({ "resourceManager": resourceManagerId, "updateStatus": false }, "projectName projectDescription");
 
         res.json({ status: true, data: projects });
     } catch (error) {
@@ -78,7 +78,7 @@ projectRoutes.get("/assigned/:userId", async (req, res) => {
                 { "softwareArchitect": userId },
                 { "teamLead": userId }
             ]
-        }, "projectName");
+        }, "projectName projectDescription"); // Include projectDescription in the query
 
         res.json({ status: true, data: projects });
     } catch (error) {
@@ -86,6 +86,7 @@ projectRoutes.get("/assigned/:userId", async (req, res) => {
         res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
     }
 });
+
 //Get project details by project id
 projectRoutes.get("/:projectId", async (req, res) => {
     try {
