@@ -56,7 +56,7 @@ projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
     try {
         const resourceManagerId = req.params.resourceManagerId;
 
-        const projects = await Project.find({ "resourceManager": resourceManagerId, "updateStatus": false }, "projectName");
+        const projects = await Project.find({ "resourceManager": resourceManagerId, "updateStatus": false }, "projectName projectDescription");
 
         res.json({ status: true, data: projects });
     } catch (error) {
@@ -64,5 +64,59 @@ projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
         res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
     }
 });
+
+//Get projects by user id
+projectRoutes.get("/assigned/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const projects = await Project.find({
+            $or: [
+                { "resourceManager": userId },
+                { "developers": userId },
+                { "projectManager": userId },
+                { "softwareArchitect": userId },
+                { "teamLead": userId }
+            ]
+        }, "projectName projectDescription"); // Include projectDescription in the query
+
+        res.json({ status: true, data: projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
+    }
+});
+
+//Get project details by project id
+projectRoutes.get("/:projectId", async (req, res) => {
+    try {
+        const projectId = req.params.projectId;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) {
+            return res.status(404).json({ status: false, message: "Project not found." });
+        }
+
+        res.json({ status: true, data: project });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching the project." });
+    }
+});
+
+//Get all projects
+projectRoutes.get("/", async (req, res) => {
+    try {
+        const projects = await Project.find();
+
+        res.json({ status: true, data: projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
+    }
+});
+
+
 
 module.exports = projectRoutes;
