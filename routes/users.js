@@ -81,6 +81,23 @@ userRoutes.get('/developers', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Developer.' });
   }
 });
+//get user by userId
+userRoutes.get('/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: 'User not found.' });
+    }
+
+    res.json({ status: true, data: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching user details.' });
+  }
+});
+
 
 userRoutes.route("/current-user").get(auth(ur.all), function (req, res) {
   const userID = req.currentUser._id;
