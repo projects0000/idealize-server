@@ -28,6 +28,7 @@ app.use(addVersionInfo("/authentication"), require("./routes/authentication"));
 app.use(addVersionInfo("/users"), require("./routes/users"));
 app.use(addVersionInfo("/teams"), require("./routes/teams"));
 app.use(addVersionInfo("/projects"), require("./routes/projects"));
+app.use(addVersionInfo("/todo"), require("./routes/todo"));
 
 mongoose.set("strictQuery", false);
 mongoose
