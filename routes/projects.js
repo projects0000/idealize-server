@@ -104,5 +104,18 @@ projectRoutes.get("/:projectId", async (req, res) => {
     }
 });
 
+//Get all projects
+projectRoutes.get("/", async (req, res) => {
+    try {
+        const projects = await Project.find();
+
+        res.json({ status: true, data: projects });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
+    }
+});
+
+
 
 module.exports = projectRoutes;
