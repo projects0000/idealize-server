@@ -66,7 +66,7 @@ projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
 });
 
 //Get projects by user id
-projectRoutes.get("/assign/:userId", async (req, res) => {
+projectRoutes.get("/assigned/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -84,6 +84,23 @@ projectRoutes.get("/assign/:userId", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: false, message: "An error occurred while fetching projects." });
+    }
+});
+//Get project details by project id
+projectRoutes.get("/:projectId", async (req, res) => {
+    try {
+        const projectId = req.params.projectId;
+
+        const project = await Project.findById(projectId);
+
+        if (!project) {
+            return res.status(404).json({ status: false, message: "Project not found." });
+        }
+
+        res.json({ status: true, data: project });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: "An error occurred while fetching the project." });
     }
 });
 
