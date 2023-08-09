@@ -2,15 +2,19 @@ const express = require('express');
 const projectRoutes = express.Router();
 const Project = require('../models/project.model');
 
-projectRoutes.route("/").post(async function (req, res) {
+projectRoutes.post("/", async (req, res) => {
     try {
-        const { projectName, projectDescription, expectedDate, resourceManager } = req.body;
+        const { projectName, projectDescription, expectedDate, resourceManager, clientName, clientAddress, clientContactEmail, clientPhoneNumber } = req.body;
 
         const project = new Project({
             projectName,
             projectDescription,
             expectedDate,
-            resourceManager
+            resourceManager,
+            clientName,
+            clientAddress,
+            clientContactEmail,
+            clientPhoneNumber
         });
 
         const savedProject = await project.save();
