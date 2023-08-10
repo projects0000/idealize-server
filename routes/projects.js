@@ -2,19 +2,24 @@ const express = require('express');
 const projectRoutes = express.Router();
 const Project = require('../models/project.model');
 
-projectRoutes.route("/").post(async function (req, res) {
+projectRoutes.post("/", async (req, res) => {
     try {
-        const { projectName, projectDescription, expectedDate, resourceManager } = req.body;
+        const { projectName, projectDescription, expectedDate, resourceManager, clientName, clientAddress, clientContactEmail, clientPhoneNumber } = req.body;
 
         const project = new Project({
             projectName,
             projectDescription,
             expectedDate,
-            resourceManager
+            resourceManager,
+            clientName,
+            clientAddress,
+            clientContactEmail,
+            clientPhoneNumber,
+            updateStatus: false
         });
 
         const savedProject = await project.save();
-
+//
         res.json({
             message: "Project added successfully",
             status: true,
@@ -26,7 +31,7 @@ projectRoutes.route("/").post(async function (req, res) {
     }
 });
 projectRoutes.put('/update', async (req, res) => {
-    const { projectID, softwareArchitect, projectManager, teamLead, developers } = req.body;
+    const { projectID, softwareArchitect, projectManager, teamLead, developers, gitHubLinks } = req.body;
 
     try {
         const updatedProject = await Project.findByIdAndUpdate(
@@ -36,6 +41,7 @@ projectRoutes.put('/update', async (req, res) => {
                 projectManager,
                 teamLead,
                 developers,
+                gitHubLinks, // Update with GitHub links
                 updateStatus: true
             },
             { new: true }
@@ -51,6 +57,7 @@ projectRoutes.put('/update', async (req, res) => {
         res.status(500).json({ status: false, message: 'An error occurred while updating the project.' });
     }
 });
+
 
 projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
     try {

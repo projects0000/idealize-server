@@ -10,12 +10,17 @@ const ProjectSchema = new mongoose.Schema(
         projectManager: { type: Object },
         teamLead: { type: Object },
         developers: [{ type: Object }],
-        updateStatus: { type: Boolean, default: false },
+        clientName: { type: String },
+        clientAddress: { type: String },
+        clientContactEmail: { type: String },
+        clientPhoneNumber: { type: String },
+        gitHubLinks: [{ type: String }],
+        updateStatus: { type: Boolean },
     },
     {
         collection: "projects",
     }
 );
 
-const model = mongoose.model("ProjectData", ProjectSchema); // Use ProjectSchema here
+const model = mongoose.model("ProjectData", ProjectSchema);
 module.exports = model;
