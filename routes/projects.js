@@ -14,7 +14,8 @@ projectRoutes.post("/", async (req, res) => {
             clientName,
             clientAddress,
             clientContactEmail,
-            clientPhoneNumber
+            clientPhoneNumber,
+            updateStatus: false
         });
 
         const savedProject = await project.save();
@@ -30,7 +31,7 @@ projectRoutes.post("/", async (req, res) => {
     }
 });
 projectRoutes.put('/update', async (req, res) => {
-    const { projectID, softwareArchitect, projectManager, teamLead, developers } = req.body;
+    const { projectID, softwareArchitect, projectManager, teamLead, developers, gitHubLinks } = req.body;
 
     try {
         const updatedProject = await Project.findByIdAndUpdate(
@@ -40,6 +41,7 @@ projectRoutes.put('/update', async (req, res) => {
                 projectManager,
                 teamLead,
                 developers,
+                gitHubLinks, // Update with GitHub links
                 updateStatus: true
             },
             { new: true }
@@ -55,6 +57,7 @@ projectRoutes.put('/update', async (req, res) => {
         res.status(500).json({ status: false, message: 'An error occurred while updating the project.' });
     }
 });
+
 
 projectRoutes.get("/resource-manager/:resourceManagerId", async (req, res) => {
     try {

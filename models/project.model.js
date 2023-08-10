@@ -14,6 +14,7 @@ const ProjectSchema = new mongoose.Schema(
         clientAddress: { type: String },
         clientContactEmail: { type: String },
         clientPhoneNumber: { type: String },
+        gitHubLinks: [{ type: String }],
         updateStatus: { type: Boolean },
     },
     {
