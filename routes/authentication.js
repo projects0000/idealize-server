@@ -30,9 +30,12 @@ authenticationRoutes.route("/login").post(async (req, res) => {
         return res.status(400).json({ message: "Login failed", status: false });
       }
       const profile = verificationResponse?.payload;
-
       const userDocument = await User.findOne({ emailAddress: profile?.email });
       if (userDocument) {
+        if(profile.picture != userDocument.userImage){
+          userDocument.userImage = profile.picture;
+          userDocument.save();
+        }
         return res.status(200).json({
           message: "Success",
           user: {
