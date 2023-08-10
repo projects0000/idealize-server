@@ -31,6 +31,20 @@ userRoutes.route("/").post(async (req, res) => {
   }
 });
 
+userRoutes.route("/").get(auth(ur.all), async (req, res) => {
+  try {
+    User.find({}, (err, users) => {
+      if (users) {
+        res.json({ response: users, status: true });
+      } else {
+        res.json({ response: "Error occured", status: false });
+      }
+    })
+  } catch (err) {
+    res.json({ response: "Internal Server Error", status: false });
+  }
+});
+
 userRoutes.route("/empty").get(async (req, res) => {
   try {
     const documents = await User.find().lean();
@@ -41,7 +55,7 @@ userRoutes.route("/empty").get(async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-//get all software-architects
+
 userRoutes.get('/software-architects', async (req, res) => {
   try {
     const softwareArchitects = await User.find({ userRole: 'Software Architect' }, '_id firstName lastName');
@@ -51,7 +65,7 @@ userRoutes.get('/software-architects', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Software Architects.' });
   }
 });
-//get all Resource Management
+
 userRoutes.get('/resource-management', async (req, res) => {
   try {
     const resourseManager = await User.find({ userRole: 'Resource Management' }, '_id firstName lastName');
@@ -61,7 +75,7 @@ userRoutes.get('/resource-management', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Resource Management.' });
   }
 });
-//get all Project Manager
+
 userRoutes.get('/project-managers', async (req, res) => {
   try {
     const projectManager = await User.find({ userRole: 'Project Manager' }, '_id firstName lastName');
@@ -71,7 +85,7 @@ userRoutes.get('/project-managers', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Project Manager.' });
   }
 });
-//get all Developers
+
 userRoutes.get('/developers', async (req, res) => {
   try {
     const developer = await User.find({ userRole: 'Developer' }, '_id firstName lastName');
@@ -81,23 +95,6 @@ userRoutes.get('/developers', async (req, res) => {
     res.status(500).json({ status: false, message: 'An error occurred while fetching Developer.' });
   }
 });
-//get user by userId
-userRoutes.get('/:userId', async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ status: false, message: 'User not found.' });
-    }
-
-    res.json({ status: true, data: user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ status: false, message: 'An error occurred while fetching user details.' });
-  }
-});
-
 
 userRoutes.route("/current-user").get(auth(ur.all), function (req, res) {
   const userID = req.currentUser._id;
@@ -119,6 +116,70 @@ userRoutes.route("/:id").get(auth(ur.all), function (req, res) {
         res.json({ response: "An error occurred while fetch", status: false });
       } else {
         res.json({ response: users, status: true });
+      }
+    });
+});
+
+userRoutes.route("/aggregate/user-role").get(auth(ur.all), function (req, res) {
+  User.aggregate([
+    {
+      $group: {
+        _id: '$userRole',
+        users: { $push: '$$ROOT' },
+      },
+    },
+    {
+      $sort: {
+        _id: -1,
+      },
+    },
+  ])
+    .exec((err, groupedUsers) => {
+      if (err) {
+        res.json({ response: 'Error occurred', status: false });
+      } else {
+        res.json({ response: groupedUsers, status: true });
+      }
+    });
+});
+
+userRoutes.route("/aggregate/team").get(auth(ur.all), function (req, res) {
+  User.aggregate([
+    {
+      $match: {
+        team: { $ne: null }
+      }
+    },
+    {
+      $group: {
+        _id: '$team',
+        users: { $push: '$$ROOT' },
+      },
+    },
+    {
+      $lookup: {
+        from: 'teams',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'teamInfo',
+      },
+    },
+    {
+      $unwind: '$teamInfo',
+    },
+    {
+      $project: {
+        _id: 1,
+        teamName: '$teamInfo.teamName',
+        users: 1,
+      },
+    },
+  ])
+    .exec((err, groupedUsers) => {
+      if (err) {
+        res.json({ response: 'Error occurred', status: false });
+      } else {
+        res.json({ response: groupedUsers, status: true });
       }
     });
 });
