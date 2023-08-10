@@ -108,6 +108,23 @@ userRoutes.route("/current-user").get(auth(ur.all), function (req, res) {
     });
 });
 
+//get user by userId for project page
+userRoutes.get('/project/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: 'User not found.' });
+    }
+
+    res.json({ status: true, data: user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: false, message: 'An error occurred while fetching user details.' });
+  }
+});
+//
 userRoutes.route("/:id").get(auth(ur.all), function (req, res) {
   const userID = req.params.id;
   User.find({ _id: userID })
@@ -183,5 +200,6 @@ userRoutes.route("/aggregate/team").get(auth(ur.all), function (req, res) {
       }
     });
 });
+
 
 module.exports = userRoutes;
